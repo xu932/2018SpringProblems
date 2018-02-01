@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <time.h>
+#include <math.h>
 #include "pe02.h"
 #define RANGE 1000000
 
@@ -192,13 +193,25 @@ int main(int argc, char * * argv)
 // Since the distances are for comparison only, it is unnecessary to calculate the real distance,
 // as long as the orders are correct. Thus, do not call sqrt. If you do call sqrt, you need to add
 // -lm after -o pe02 in Makefile to link the math library
-double distance2(const double * datapoint, double * centroid, int dim)
-{
-  // since this is for comparison only, there is no need to call sqrt
-  double sum = 0; // must initialize to zero
-  //Please complete the 
-  return sum;
+double distance2(const double * datapoint, double * centroid, int dim) {
+/*	// since this is for comparison only, there is no need to call sqrt
+	double sum = 0;
+	for (int i = 0; i < dim; i++) {
+		sum += (datapoint[i] - centroid[i]) * (datapoint[i] - centroid[i]);
+	}
+	return sum;
+*/
+
+	double sum = 0; // must initialize to zero
+	int diter;
+	for (diter = 0; diter < dim; diter ++)
+	{
+		double diff = datapoint[diter] - centroid[diter];
+		sum += pow(diff, 2);
+	}
+	return (sum);
 }
+
 
 
 
@@ -219,7 +232,18 @@ double distance2(const double * datapoint, double * centroid, int dim)
 // 4. double * * centroid - you can think of it as array of centroids.
 int closestCentroid(int kval, int dim, const double * data, double * * centroid)
 {
-  int mindex = 0;
-  return mindex;
+	int kiter;
+	int mindex = 0;
+	double mindiff = distance2(data, centroid[0], dim);
+	for (kiter = 1; kiter < kval; kiter ++)
+	{
+		double diff = distance2(data, centroid[kiter], dim);
+		if (diff < mindiff)
+		{
+			mindiff = diff;
+			mindex = kiter;
+		}
+	}
+	return mindex;
 }
 
