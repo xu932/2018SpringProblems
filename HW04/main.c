@@ -14,7 +14,7 @@
 	4. argv[3]: We only need input in argv[3] when argv[2] is equal to "-s". argv[3] is the name of the student you are looking for. If there is no such student, you should print "No this student\n". Otherwise, use PrintStudent() function to print the information of the student.
 */
 int main(int argc, char ** argv) {
-	if (argc < 3 || argc > 4) {
+	if (argc < 3) {
 		printf("Insufficient arguments\n");
 		return EXIT_FAILURE;
 	}
