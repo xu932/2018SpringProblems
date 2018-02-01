@@ -57,7 +57,7 @@ StudentDatabase * Connect(char * filename) {
 			fclose(fpt);
 			return NULL;
 		}
-	StudentDatabase * db = NULL;
+	}
 	for (int i = 0; i < count; i++) {
 		if (fscanf(fpt, "%d,%[^,],%[^,],%[^,],%[^,],%d", &(db -> students[i] -> id), db -> students[i] -> name, db -> students[i] -> major, db -> students[i] -> year, db -> students[i] -> enroll, &(db -> students[i] -> age)) != 6) {
 			printf("Reading student information error\n");
