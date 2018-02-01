@@ -18,6 +18,7 @@
 			fopen(), fclose(), fgetc(), fscanf(), feof().
 		You can use fseek(fptr, 0, SEEK_SET) to go to the beginning of a file. 
 	3. You should return a pointer to StudentDatabase object.
+	4. If you fail to connect to the database, you should return NULL.
 */
 StudentDatabase * Connect(char * filename) {
 	FILE * fpt = fopen(filename, "r");
@@ -56,7 +57,8 @@ StudentDatabase * Connect(char * filename) {
 			fclose(fpt);
 			return NULL;
 		}
-
+	StudentDatabase * db = NULL;
+	for (int i = 0; i < count; i++) {
 		if (fscanf(fpt, "%d,%[^,],%[^,],%[^,],%[^,],%d", &(db -> students[i] -> id), db -> students[i] -> name, db -> students[i] -> major, db -> students[i] -> year, db -> students[i] -> enroll, &(db -> students[i] -> age)) != 6) {
 			printf("Reading student information error\n");
 			for (int j = 0; j <= i; j++) {
@@ -115,7 +117,7 @@ Student * SearchByName(StudentDatabase * studb, char * name) {
 	return NULL;
 }
 #endif
-
+/* Warning: Do not modify or delete codes below this line. */
 /* This function prints info of a student. */
 void PrintStudent(Student * stu) {
 	printf("ID:%d, Name:%s, Major:%s, Enrollment:%s, Year:%s, Age:%d\n",
