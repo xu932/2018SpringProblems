@@ -12,22 +12,39 @@ void cleanup(FILE * fpin, FILE * fpout)
 	fclose (fpout);
 }
 
-// allocate a two dimensional array of
 double * * allocateMemory(int nrow, int ncol)
 {
 	double * * data = NULL;
-	//TODO: allocate memory for the data and then return the data
-	//It is this functions reponsibility to ensure that memory is allocated
+	data = malloc(sizeof(double*) * nrow);
+	if (!data) {
+		free(data);
+		return NULL;
+	}
+	for (int i = 0; i < nrow; i++) {
+		data[i] = malloc(sizeof(double) * ncol);
+		if (!data[i]) {
+			for (int j = 0; j <= i; j++) {
+				free(data[i]);
+			}
+			free(data);
+			return NULL;
+		}
+	}
 	return data;
 }
 
 void releaseMemory(double * * data, int nrow)
 {
-	//TODO: complete this function to release the memory of the data
-	//not completing this function will lead to memory not getting free
+	if (data) {
+		for (int i = 0; i < nrow; i++) {
+			if (data[i]) {
+				free(data[i]);
+			}
+		}
+		free(data);
+	}
 }
 
-// read the data, return true if success, false if fail
 bool readData(FILE * fpin, double * * data, int nval, int dim)
 {
 	int niter, diter;
@@ -47,16 +64,16 @@ bool readData(FILE * fpin, double * * data, int nval, int dim)
 // write the output centroids to the file
 // check for all the NULL before calling this function, it does not check
 void writeCentroids(FILE * fpout, double * * centroid, int kval, int dim){
-  int kiter,diter;
-  for (kiter = 0; kiter < kval; kiter ++)
-  {
-    for (diter = 0; diter < dim; diter ++)
-    {
-      //write to the file
-      fprintf(fpout, "%lf ", centroid[kiter][diter]);
-    }
-    fprintf(fpout, "\n");
-  }
+	int kiter,diter;
+	for (kiter = 0; kiter < kval; kiter ++)
+	{
+		for (diter = 0; diter < dim; diter ++)
+		{
+			//write to the file
+			fprintf(fpout, "%lf ", centroid[kiter][diter]);
+		}
+		fprintf(fpout, "\n");
+	}
 }
 
 //initilize function is to initilize the values for centroid
@@ -165,60 +182,78 @@ int main(int argc, char * * argv)
 	// initialize centroids within [-RANGE, RANGE] of every dimension
 	initialize(centroid, kval, dim);
 
-  //allocate memory for cluster
-  int * cluster;
-  cluster = malloc(sizeof(*cluster)*nval);
-  if(cluster == NULL)
-  {
+	//allocate memory for cluster
+	int * cluster;
+	cluster = malloc(sizeof(*cluster)*nval);
+	if(cluster == NULL)
+	{
 		cleanup(fpin, fpout);
 		return EXIT_FAILURE;
 	}
-  // initilize cluster values
-  for(int niter = 0; niter < nval; niter++)
-  {
-    cluster[niter] = -1;
-  }
+	// initilize cluster values
+	for(int niter = 0; niter < nval; niter++)
+	{
+		cluster[niter] = -1;
+	}
 
-  //now we will run our kmean algorithm
-  kmean(kval, nval, dim, datapoint, centroid, cluster);
+	//now we will run our kmean algorithm
+	kmean(kval, nval, dim, datapoint, centroid, cluster);
 
 
-  //print all the centroids into a file
-  writeCentroids(fpout, centroid, kval, dim);
+	//print all the centroids into a file
+	writeCentroids(fpout, centroid, kval, dim);
 
-  //free all the allocated spaces
-  releaseMemory(datapoint, nval);
-  releaseMemory(centroid, kval);
-  free(cluster);
-  //close all the files
-  cleanup(fpin, fpout);
+	//free all the allocated spaces
+	releaseMemory(datapoint, nval);
+	releaseMemory(centroid, kval);
+	free(cluster);
+	//close all the files
+	cleanup(fpin, fpout);
 	return EXIT_SUCCESS;
 }
-
-
-// The k-mean method to cluster data
-// kval: the number of clusters
-// nval: the number of data pointers
-// dim: dimension of the data
-// data: two-dimensional array of the data, nval rows, dim columns
-// centroid: two-dimensional array of the data, kval rows, dim columns
-// cluster: one-dimensional array of n elements, the assignments of
-// data to the clusters. cluster[i] = j means the i-th data pointer is
-// assigned to the j-th cluster. 0 <= i < nval; 0 <= j < kval
 
 void kmean(int kval, int nval, int dim, double * * data, double * * centroid,
 		int * cluster)
 {
+	double diff = 1;
+#ifdef DEBUG
+	for (int i = 0; i < kval; i++) {
+		memcpy(centroid[i], data[i], sizeof(double) * dim);
+	} 
+#endif
+	double *newC = malloc(sizeof(double) * dim);
+	for(int i = 0; i < dim; i++) {
+		newC[i] = 0;
+	}
 
-	//TODO: complete this function
-	/*This assignment uses the *k-mean clustering* algorithm. This algorithm works in the following way:
-	  1. Read the data and the given value k
-	  2. Pick k points (called *centroids*) randomly as the initial centers
-	  of the k group
-	  3. For each data point, find the closet centroid. Assign this data point to the group represented by this centroid.
-	  4. For each group, recompute the location of the centroid as the center of all data points belonging to this group.
-	  5. Repeat steps 3 and 4 until the convergence condition is met.
-	*/
-
-	
+	while (diff > 0) {
+		diff = 0;
+		for (int i = 0; i < nval; i++) {
+			cluster[i] = closestCentroid(kval, dim, data[i], centroid);
+		}
+		for (int i = 0; i < kval; i++) {
+			int counter = 0;
+			for (int j = 0; j < dim; j++) {
+				newC[j] = 0;
+			}
+			//==================start the loop=====================
+			for (int j = 0; j < nval; j++) {
+				if (cluster[j] == i) {
+					counter++;
+					for (int k = 0; k < dim; k++) {
+						newC[k] += data[j][k];
+					}
+				}
+			}
+			for (int j = 0; j < dim; j++) {
+				if (counter == 0) {
+					counter = 1;
+				}
+				newC[j] /= counter;
+			}
+			diff += distance2(newC, centroid[i], dim);
+			memcpy(centroid[i], newC, sizeof(double) * dim);
+		}
+	}
+	free(newC);
 }
