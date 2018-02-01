@@ -14,7 +14,37 @@
 	4. argv[3]: We only need input in argv[3] when argv[2] is equal to "-s". argv[3] is the name of the student you are looking for. If there is no such student, you should print "No this student\n". Otherwise, use PrintStudent() function to print the information of the student.
 */
 int main(int argc, char ** argv) {
-	
-	return EXIT_SUCCESS;
+	if (argc < 3 || argc > 4) {
+		printf("Insufficient arguments\n");
+		return EXIT_FAILURE;
+	}
+	StudentDatabase *db = Connect(argv[1]);
+	if (!db) {
+		printf("Load database failed\n");
+		Close(db);
+		return EXIT_FAILURE;
+	}
+	if (!strcmp(argv[2], "-a")) {
+		PrintDatabase(db);
+		Close(db);
+		return EXIT_SUCCESS;
+	} else if (!strcmp(argv[2], "-s")) {
+		if (argc == 3) {
+			printf("Wrong arguments\n");
+			return EXIT_FAILURE;
+		}
+		Student *s = SearchByName(db, argv[3]);
+		if (s) {
+			PrintStudent(s);
+			Close(db);
+		} else {
+			printf("No this student\n");
+			Close(db);
+		}
+		return EXIT_SUCCESS;
+	} else {	
+		printf("Wrong arguments\n");
+		return EXIT_FAILURE;
+	}
 }
 

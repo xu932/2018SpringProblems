@@ -20,8 +20,54 @@
 	3. You should return a pointer to StudentDatabase object.
 */
 StudentDatabase * Connect(char * filename) {
-	StudentDatbase * db = NULL;
+	FILE * fpt = fopen(filename, "r");
+	if (!fpt) {
+		fclose(fpt);
+		return NULL;
+	}
+	StudentDatabase * db = malloc(sizeof(StudentDatabase));
+	if (!db) {
+		free(db);
+		return NULL;
+	}
+	char read = fgetc(fpt);
+	int count = 0;
+	while (read != EOF) {
+		if (read == '\n') {
+			count++;
+		}
+		read = fgetc(fpt);
+	}
+	fseek(fpt, 0, SEEK_SET);
+	db -> students = malloc(sizeof(Student*) * count);
+	if (!(db -> students)) {
+		free(db -> students);
+		free(db);
+	}
+	db -> number = count;
+	for (int i = 0; i < count; i++) {
+		db -> students[i] = malloc(sizeof(Student));
+		if (!(db -> students[i])) {
+			for (int j = 0; j <= i; j++) {
+				free(db -> students[j]);
+			}
+			free(db -> students);
+			free(db);
+			fclose(fpt);
+			return NULL;
+		}
 
+		if (fscanf(fpt, "%d,%[^,],%[^,],%[^,],%[^,],%d", &(db -> students[i] -> id), db -> students[i] -> name, db -> students[i] -> major, db -> students[i] -> year, db -> students[i] -> enroll, &(db -> students[i] -> age)) != 6) {
+			printf("Reading student information error\n");
+			for (int j = 0; j <= i; j++) {
+				free(db -> students[j]);
+			}
+			free(db -> students);
+			free(db);
+			fclose(fpt);
+			return NULL;
+		}
+	}
 	return db;
 }
 #endif
@@ -33,7 +79,17 @@ StudentDatabase * Connect(char * filename) {
 	studb is a pointer to the database. 
 */
 void Close(StudentDatabase * studb) {
-
+	if (studb) {
+		if (studb -> students) {
+			for (int i = 0; i < studb -> number; i++) {
+				if (studb -> students[i]) {
+					free(studb -> students[i]);
+				}
+			}
+			free(studb -> students);
+		}
+		free(studb);
+	}
 }
 #endif
 
@@ -46,7 +102,16 @@ void Close(StudentDatabase * studb) {
 	to the Student object of that student. Otherwise, you should return NULL. 
  */
 Student * SearchByName(StudentDatabase * studb, char * name) {
-	
+	Student *s;
+	if (!studb || !(studb -> students)) {
+		return NULL;
+	}
+	for (int i = 0; i < studb -> number; i++) {
+		if (studb -> students[i] && !strcmp(studb -> students[i] -> name, name)) {
+			s = studb -> students[i];
+			return s;
+		}
+	}	
 	return NULL;
 }
 #endif
@@ -54,7 +119,7 @@ Student * SearchByName(StudentDatabase * studb, char * name) {
 /* This function prints info of a student. */
 void PrintStudent(Student * stu) {
 	printf("ID:%d, Name:%s, Major:%s, Enrollment:%s, Year:%s, Age:%d\n",
-		stu -> id, stu -> name, stu -> major, stu -> enrollment, stu -> year, stu -> age);
+		stu -> id, stu -> name, stu -> major, stu -> enroll, stu -> year, stu -> age);
 }
 
 /* This function prints all students' info in database. */

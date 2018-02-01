@@ -13,6 +13,10 @@
 typedef struct {
 	int id;
 	char name[MAX_LEN];
+	char major[MAX_LEN];
+	char year[MAX_LEN];
+	char enroll[MAX_LEN];
+	int age;
 } Student;
 
 /* Do not change code below this line */
