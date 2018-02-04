@@ -23,12 +23,10 @@
 StudentDatabase * Connect(char * filename) {
 	FILE * fpt = fopen(filename, "r");
 	if (!fpt) {
-		fclose(fpt);
 		return NULL;
 	}
 	StudentDatabase * db = malloc(sizeof(StudentDatabase));
 	if (!db) {
-		free(db);
 		return NULL;
 	}
 	char read = fgetc(fpt);
@@ -70,6 +68,7 @@ StudentDatabase * Connect(char * filename) {
 			return NULL;
 		}
 	}
+    fclose(fpt);
 	return db;
 }
 #endif

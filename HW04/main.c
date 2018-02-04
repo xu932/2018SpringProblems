@@ -31,6 +31,7 @@ int main(int argc, char ** argv) {
 	} else if (!strcmp(argv[2], "-s")) {
 		if (argc == 3) {
 			printf("Wrong arguments\n");
+            Close(db);
 			return EXIT_FAILURE;
 		}
 		Student *s = SearchByName(db, argv[3]);
@@ -44,6 +45,7 @@ int main(int argc, char ** argv) {
 		return EXIT_SUCCESS;
 	} else {	
 		printf("Wrong arguments\n");
+        Close(db);
 		return EXIT_FAILURE;
 	}
 }
