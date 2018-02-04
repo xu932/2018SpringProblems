@@ -10,16 +10,16 @@
 
 #ifndef TEST_CONNECT
 /*  
-	Complete this function. 
-	In this function, you should:
-	1. Allocate appripriate memory for database using malloc.
-	2. Read the content of file and store it to the StudentDatabase object.
-		To read the file, you may want to use the following functions:
-			fopen(), fclose(), fgetc(), fscanf(), feof().
-		You can use fseek(fptr, 0, SEEK_SET) to go to the beginning of a file. 
-	3. You should return a pointer to StudentDatabase object.
-	4. If you fail to connect to the database, you should return NULL.
-*/
+    Complete this function. 
+    In this function, you should:
+    1. Allocate appripriate memory for database using malloc.
+    2. Read the content of file and store it to the StudentDatabase object.
+    To read the file, you may want to use the following functions:
+    fopen(), fclose(), fgetc(), fscanf(), feof().
+    You can use fseek(fptr, 0, SEEK_SET) to go to the beginning of a file. 
+    3. You should return a pointer to StudentDatabase object.
+    4. If you fail to connect to the database, you should return NULL.
+ */
 StudentDatabase * Connect(char * filename) {
 	FILE * fpt = fopen(filename, "r");
 	if (!fpt) {
@@ -68,17 +68,18 @@ StudentDatabase * Connect(char * filename) {
 			return NULL;
 		}
 	}
-    fclose(fpt);
+	fclose(fpt);
+
 	return db;
 }
 #endif
 
 #ifndef TEST_CLOSE
 /* 
-	You have to complete this function
-	Free the memory you allocated in Connect() using free()
-	studb is a pointer to the database. 
-*/
+   You have to complete this function
+   Free the memory you allocated in Connect() using free()
+   studb is a pointer to the database. 
+ */
 void Close(StudentDatabase * studb) {
 	if (studb) {
 		if (studb -> students) {
@@ -96,11 +97,11 @@ void Close(StudentDatabase * studb) {
 
 #ifndef TEST_SEARCH
 /* 
-	You have to complete this function.
-	1. studb is a pointer to StudentDatbase object.
-	2. name is the name of the student you are looking for.
-	3. If the "name" is in the database, you should return a pointer 
-	to the Student object of that student. Otherwise, you should return NULL. 
+   You have to complete this function.
+   1. studb is a pointer to StudentDatbase object.
+   2. name is the name of the student you are looking for.
+   3. If the "name" is in the database, you should return a pointer 
+   to the Student object of that student. Otherwise, you should return NULL. 
  */
 Student * SearchByName(StudentDatabase * studb, char * name) {
 	Student *s;
@@ -120,7 +121,7 @@ Student * SearchByName(StudentDatabase * studb, char * name) {
 /* This function prints info of a student. */
 void PrintStudent(Student * stu) {
 	printf("ID:%d, Name:%s, Major:%s, Enrollment:%s, Year:%s, Age:%d\n",
-		stu -> id, stu -> name, stu -> major, stu -> enroll, stu -> year, stu -> age);
+			stu -> id, stu -> name, stu -> major, stu -> enroll, stu -> year, stu -> age);
 }
 
 /* This function prints all students' info in database. */
