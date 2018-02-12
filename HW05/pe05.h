@@ -1,8 +1,8 @@
+/*Do not modify this file. If you change it, you will get zero. */
 #ifndef PE05_H
 #define PE05_H
 #define MAX_LEN 80
 
-/* Do not change code below this line */
 typedef struct {
 	int id;
 	char name[MAX_LEN];
