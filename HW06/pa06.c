@@ -14,7 +14,18 @@
 	4. return NULL if you fail to allocate memory for SelectedField object.
 */
 SelectedField * ConstructField() {
-
+    SelectedField *sf = malloc(sizeof(SelectedField));
+    if (!sf) {
+        return NULL;
+    } else {
+        sf -> id = false;
+        sf -> name = false;
+        sf -> major = false;
+        sf -> year = false;
+        sf -> enrollment = false;
+        sf -> age = false;
+        return sf;
+    }
 }
 #endif
 
@@ -30,7 +41,36 @@ SelectedField * ConstructField() {
 	3. In this function, you should parse the qeury and store the information to ParseResult object. Similar to `Connect()` function in HW04, you should allocate memory for the required objects and then update the fields in the objects. 
 */
 ParseResult * ParseQuery(int num, char ** query) {
-
+    ParseResult *pr = malloc(sizeof(ParseResult));
+    if (!pr) {
+        return NULL;
+    }
+    pr -> field = ConstructField();
+    if (!(pr -> field)) {
+        return NULL;
+    }
+    for (int i = 2; i < num; i++) {
+        if (!strcmp(query[i], "WHERE")) {
+            int count = 1;
+            for (int j = i; j < num; j++) {
+                if (!strcmp(query[j], "AND") || !strcmp(query[j], "OR")) {
+                    count++;
+                }
+            }
+            pr -> conditions = malloc(sizeof(Condition*) * count);
+            for (int j = 0; j < count; j++) {
+                pr -> conditions[j] = malloc(sizeof(Condition));
+                strcpy(pr -> condition)
+            }
+        } else {
+            pr -> field -> id = !strcmp(query[i], "id");
+            pr -> field -> name = !strcmp(query[i], "name");
+            pr -> field -> major = !strcmp(query[i], "major");
+            pr -> field -> year = !strcmp(query[i], "year");
+            pr -> field -> enrollment = !strcmp(query[i], "enrollment");
+            pr -> field -> age = !strcmp(query[i], "age");
+        }
+    }
 }
 #endif
 
