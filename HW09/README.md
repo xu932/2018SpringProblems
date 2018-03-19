@@ -62,7 +62,7 @@ In this exercise, you have to complete six functions - `StudentQsort()`, `Partit
 		When argv[2] is "-a", you should sort the database by age in ascending order and print the database in a binary file which is argv[3] and return `EXIT_SUCCESS`.
 		When argv[2] is "-n", you should sort the database by name in ascending order and print the database in a binary file which is argv[3] and return `EXIT_SUCCESS`.
 		For example, Student "Alice" should come before "Bob".
-	4. If argv[2] is neither "-a" nor "-s", you should print "Wrong arguments\n" and return `EXIT_FAILURE`.
+	4. If argv[2] is neither "-a" nor "-n", you should print "Wrong arguments\n" and return `EXIT_FAILURE`.
 	5. argv[3]: This is the output filename. You should write the output of database into this file.
 	6. print "Write to db\n" if `WriteDatabase()` work. Otherwise, print "Fail to write to db\n"
 
@@ -96,7 +96,7 @@ Following are the files we provide:
 	2. `sortSmallbyname.bin` - ./pa09 smallDbBinary.bin -n sortSmallbyname.bin
 	3. `sortbyage.bin` - ./pa09 databaseBinary.bin -a sortbyage.bin
 	4. `sortbyname.bin` - ./pa09 databaseBinary.bin -n sortbyname.bin
-
+9. `database` - This folder contains more binary input files for testing the code. 
 -------
 To test your code. You have to first compile it and then run the following command.
 
@@ -104,7 +104,7 @@ Sort the database by age in ascending order and write it to a file.
 ```
 ./pa09 databaseBinary.bin -a outputSortAge.bin > outputPivotsAge.txt
 ```
-Sort the database by name in descending order and write it to a file.
+Sort the database by name in ascending order and write it to a file.
 ```
 ./pa09 databaseBinary.bin -n outputSortName.bin > outputPivotsName.txt
 ```
