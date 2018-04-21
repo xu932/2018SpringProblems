@@ -3,10 +3,13 @@
 #ifndef USIGN_TO_BIN
 // function to create binary values from the input char values
 char * UnSig2Bin(unsigned char value) {
-    // determine the number of bits needed ("sizeof" returns bytes)
-	// create mask which you would use for the getting each bit value
-	// for loop to mast values and creating char array of bits
-    
+    char *result = malloc(sizeof(char) * 9);
+    unsigned char MASK = 0x80;
+    for (int i = 0; i < 8; i++) {
+      result[i] = (value & (MASK >> i)) > 0 ? '1' : '0';
+    }
+    result[8] = '\0';
+    return result;
 }
 
 #endif
@@ -16,11 +19,31 @@ char * UnSig2Bin(unsigned char value) {
 // WriteInOrderBinary takes root and file * as input
 // and creates binary representation of the tree as specified in the example
 int WritePreOrderBinary(TreeNode * root, FILE *outptr){
-  return EXIT_SUCCESS;
+  if (!root) return EXIT_SUCCESS;
+  if (root -> leftChild == NULL && root -> rightChild == NULL) {
+    fputc('1', outptr);
+    printf("1");
+    char *temp = UnSig2Bin(root -> data);
+    fprintf(outptr, "%s", temp);
+    printf("%s", temp);
+    free(temp);
+  } else {
+      fputc('0', outptr);
+      printf("0");
+      WritePreOrderBinary(root -> leftChild, outptr);
+      WritePreOrderBinary(root -> rightChild, outptr);
+  }
+  return 1;
 }
 
 int CreateBinaryFromTree(TreeNode * root, const char *outfile){
-  return ret;
+  FILE *tmp = tmpfile();
+  WritePreOrderBinary(root, tmp);
+  fputc('0', tmp);
+  //int size = ftell(tmp) / sizeof(char);
+  fseek(tmp, 0, SEEK_SET);
+
+  return 1;
 }
 
 #endif
@@ -32,6 +55,10 @@ int CreateBinaryFromTree(TreeNode * root, const char *outfile){
 #ifndef CLEAN_TREE
 
 void CleanTree(TreeNode * root){
+  if(!root)  return;
+  CleanTree(root -> leftChild);
+  CleanTree(root -> rightChild);
+  free(root);
 }
 #endif
 

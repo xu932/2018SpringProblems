@@ -15,7 +15,15 @@
 
 
 int main(int argc, char **argv){
- return EXIT_SUCCESS;
+	if (argc != 4)	return EXIT_FAILURE;
+	long seed = atol(argv[1]);
+	long num = atol(argv[2]);
+	
+	if (seed <= 0 || num <= 0)	return EXIT_FAILURE;
+	TreeNode *root = CreateBinarySearchTree(seed, num);
+	
+	CreateBinaryFromTree(root, argv[3]);
+	CleanTree(root);
 
 }
 #endif
